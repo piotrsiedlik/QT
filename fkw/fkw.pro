@@ -25,10 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    wykres.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    wykres.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    wykres.ui

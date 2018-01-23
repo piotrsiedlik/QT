@@ -15,6 +15,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_pbZamknij_clicked();
+
+    void on_pbOblicz_clicked();
+
+    void on_pbWykres_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
