@@ -13,7 +13,12 @@ class UstawieniaUSB : public QDialog
 
 public:
     explicit UstawieniaUSB(QWidget *parent = 0);
+    void wyswiettbUstawienia(QString tekst,QString tablica[20][4],int liczbau);
     ~UstawieniaUSB();
+
+private slots:
+    void on_pbZnajdz_clicked();
+
 
 private:
     Ui::UstawieniaUSB *ui;

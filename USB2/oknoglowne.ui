@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1029</width>
-    <height>708</height>
+    <width>908</width>
+    <height>558</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="pbZamknij">
     <property name="geometry">
      <rect>
-      <x>940</x>
-      <y>620</y>
+      <x>810</x>
+      <y>470</y>
       <width>82</width>
       <height>23</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="pbUstawieniaUSB">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>620</y>
+      <x>20</x>
+      <y>470</y>
       <width>82</width>
       <height>23</height>
      </rect>
@@ -46,7 +46,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1029</width>
+     <width>908</width>
      <height>20</height>
     </rect>
    </property>

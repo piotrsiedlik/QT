@@ -9,5 +9,6 @@ int main(int argc, char *argv[])
     OknoGlowne w;
     w.show();
     komunikacjaUSB U1;
+    U1.znajdzUrzadzenia();
     return a.exec();
 }
