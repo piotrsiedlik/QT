@@ -2,6 +2,7 @@
 #define USTAWIENIAUSB_H
 
 #include <QDialog>
+#include "komunikacjausb.h"
 
 namespace Ui {
 class UstawieniaUSB;
@@ -19,6 +20,8 @@ public:
 private slots:
     void on_pbZnajdz_clicked();
 
+
+    void on_cbCzujnik1_highlighted(int index);
 
 private:
     Ui::UstawieniaUSB *ui;

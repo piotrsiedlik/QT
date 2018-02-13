@@ -14,11 +14,15 @@ class OknoGlowne : public QMainWindow
 public:
     explicit OknoGlowne(QWidget *parent = 0);
     ~OknoGlowne();
+signals:
+    void start();
 
 private slots:
     void on_pbZamknij_clicked();
 
     void on_pbUstawieniaUSB_clicked();
+
+    void on_pbStart_clicked();
 
 private:
     Ui::OknoGlowne *ui;
