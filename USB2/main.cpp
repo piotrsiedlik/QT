@@ -7,6 +7,7 @@
 #include<QObject>
 #include "ui_oknoglowne.h"
 #include "ui_ustawieniausb.h"
+#include <QDebug>
 
 libusb_device **urzadzenia;
 komunikacjaUSB u;
@@ -68,7 +69,7 @@ QString komunikacjaUSB::wyswietlurzadzenia()
     tekst="Liczba urządzeń: "+QString::number(lurz);
     return tekst;
 }
-void komunikacjaUSB::transfer(int czujnik)
+void komunikacjaUSB::transfer(int czujnik,komunikacjaUSB u)
 {
     libusb_device *dev;
     libusb_device **devs;
@@ -80,7 +81,9 @@ void komunikacjaUSB::transfer(int czujnik)
     QErrorMessage Err;
     if(r<0)
     {
-        Err.showMessage("Błąd inicjacji");
+
+        //Err.showMessage("Błąd inicjacji");
+        qDebug() << "Błąd inicjacji";
         exit(1);
     }
     libusb_set_debug(ctx,3);
@@ -89,35 +92,74 @@ void komunikacjaUSB::transfer(int czujnik)
     {
         {
             Err.showMessage("Błąd pobrania listy urządzeń");
+            qDebug() << "Błąd pobrania listy urządzeń";
             exit(1);
         }
     }
-    dev_handle=libusb_open_device_with_vid_pid(ctx,IDint[czujnik][0],IDint[czujnik][1] );
+    //dev_handle=libusb_open_device_with_vid_pid(ctx,IDint[czujnik][0],IDint[czujnik][1] );
+    dev_handle=libusb_open_device_with_vid_pid(ctx,7119,5 );
+    if(libusb_kernel_driver_active(dev_handle, 0) == 1)
+        {
+                    qDebug()<<"Kernel Driver Active"<<endl;
+                    if(libusb_detach_kernel_driver(dev_handle, 0) == 0)
+                        qDebug()<<"Kernel Driver Detached!";
+        }
     if(dev_handle == NULL)
     {
         Err.showMessage("Nie można się połączyć z urządzeniem: "+QString::number(czujnik));
+        qDebug() << "Nie można się połączyć z urządzeniem: ";
         exit(1);
     }
-    libusb_free_device_list(devs,1);
+    //qDebug()<<"1";
+    //libusb_free_device_list(devs,1);
+    //qDebug()<<"1.1";
     unsigned char *data=new unsigned char[10];
+    //qDebug()<<"1.3";
     int sprawdz;
+    //qDebug()<<"1.4";
     r=libusb_claim_interface(dev_handle,0);
+    //qDebug()<<"2";
     if(r<0)
     {
         Err.showMessage("Nie można się połączyć z urządzeniem");
+        qDebug() << "Nie można się połączyć z urządzeniem"+QString::number(r);
         exit(0);
     }
-    r=libusb_bulk_transfer(dev_handle,1|LIBUSB_ENDPOINT_IN,data,10,&sprawdz,0);
+
+    for(int j=0;j<100;j++)
+    {
+    r=libusb_interrupt_transfer(dev_handle,0x81 ,data,10,&sprawdz,10);
+    qDebug()<<data;
+    int liczba = (int)data[9];
+    QString str;
+    str.append(data[9]);
+    u.Dane1<<str;
+    qDebug()<<liczba;
+    }
+
+
+    if(libusb_attach_kernel_driver(dev_handle,0)==1)
+    {
+        qDebug()<<"driver on";
+
+    }
+    else
+    {
+        qDebug()<<"driver off";
+    }
     if(r==0&&sprawdz==10)
     {
         Err.showMessage("Jest git");
+        qDebug() << "Jest git";
     }
     else
     {
         Err.showMessage("Wystąpił błąd podczas transmisji");
+        qDebug() << "Wystąpił błąd podczas transmisji";
     }
     r = libusb_release_interface(dev_handle, 0);
     delete[] data;
+    qDebug()<<"KONIEC";
 }
 OknoGlowne::OknoGlowne(QWidget *parent) :
     QMainWindow(parent),
@@ -147,7 +189,11 @@ void OknoGlowne::on_pbUstawieniaUSB_clicked()
 
 void OknoGlowne::on_pbStart_clicked()
 {
-    u.transfer(u.getCzujnik1index());
+
+
+    u.transfer(u.getCzujnik1index(),u);
+    //qDebug()<<u.Dane1.last();
+
 }
 UstawieniaUSB::UstawieniaUSB(QWidget *parent) :
     QDialog(parent),
@@ -184,5 +230,14 @@ void UstawieniaUSB::on_pbZnajdz_clicked()
 
 void UstawieniaUSB::on_cbCzujnik1_highlighted(int index)
 {
+
+}
+void OknoGlowne::wys(QString tekst)
+{
+    ui->tbError->append(tekst);
+}
+void UstawieniaUSB ::on_cbCzujnik1_currentIndexChanged(int index)
+{
     u.setCzujnik1index(index);
+    ui->tbUstawienia->append(QString::number(u.getCzujnik1index()));
 }

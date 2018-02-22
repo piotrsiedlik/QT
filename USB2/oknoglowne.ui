@@ -53,6 +53,16 @@
      <string>Start</string>
     </property>
    </widget>
+   <widget class="QTextBrowser" name="tbError">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>10</y>
+      <width>311</width>
+      <height>401</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

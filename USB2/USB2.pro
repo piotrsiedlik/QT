@@ -24,10 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        oknoglowne.cpp \
-    komunikacjausb.cpp \
-    ustawieniausb.cpp
+        main.cpp
 
 HEADERS += \
         oknoglowne.h \

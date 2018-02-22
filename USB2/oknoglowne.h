@@ -14,6 +14,7 @@ class OknoGlowne : public QMainWindow
 public:
     explicit OknoGlowne(QWidget *parent = 0);
     ~OknoGlowne();
+    void wys(QString tekst);
 signals:
     void start();
 

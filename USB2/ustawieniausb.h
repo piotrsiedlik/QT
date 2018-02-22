@@ -23,6 +23,8 @@ private slots:
 
     void on_cbCzujnik1_highlighted(int index);
 
+    void on_cbCzujnik1_currentIndexChanged(int index);
+
 private:
     Ui::UstawieniaUSB *ui;
 };

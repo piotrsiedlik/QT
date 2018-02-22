@@ -2,6 +2,7 @@
 #define KOMUNIKACJAUSB_H
 #include <libusb.h>
 #include <QString>
+#include <QList>
 
 class komunikacjaUSB
 {
@@ -11,6 +12,7 @@ public:
     QString wyswietlurzadzenia();
     QString ID[20][4];
     uint16_t IDint[20][4];
+    QList <QString> Dane1;
     int getLurz()
     {
         int l=lurz;
@@ -23,7 +25,7 @@ public:
         Czujnik1index=indeks;
     }
 public slots:
-    void transfer(int czujnik);
+    void transfer(int czujnik, komunikacjaUSB u);
 private:
     ssize_t lurz;
     int Czujnik1index;
