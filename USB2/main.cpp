@@ -11,6 +11,7 @@
 
 libusb_device **urzadzenia;
 komunikacjaUSB u;
+unsigned char buforx,bufory;
 
 int main(int argc, char *argv[])
 {
@@ -28,11 +29,12 @@ void komunikacjaUSB::znajdzUrzadzenia()
 
     //libusb_device_handle *devhandle;
     libusb_context *ctx=NULL;
-    int u=libusb_init(&ctx);
+    int u=libusb_init(&ctx)
+            ;
     QErrorMessage Err;
     if(u<0)
     {
-        Err.showMessage("Błąd inicjacji");
+        Err.showMessage("1Błąd inicjacji");
         exit(1);
     }
     libusb_set_debug(ctx,3);
@@ -72,20 +74,13 @@ QString komunikacjaUSB::wyswietlurzadzenia()
 void komunikacjaUSB::transfer(int czujnik,komunikacjaUSB u)
 {
     libusb_device *dev;
-    libusb_device **devs;
+    //libusb_device **devs;
     libusb_device_handle *dev_handle;
     libusb_context *ctx =NULL;
     struct libusb_device_descriptor desc;
     int r;
     ssize_t cnt;
     QErrorMessage Err;
-    if(r<0)
-    {
-
-        //Err.showMessage("Błąd inicjacji");
-        qDebug() << "Błąd inicjacji";
-        exit(1);
-    }
     libusb_set_debug(ctx,3);
     cnt=libusb_get_device_descriptor(dev, &desc);
     if(cnt<0)
@@ -96,8 +91,8 @@ void komunikacjaUSB::transfer(int czujnik,komunikacjaUSB u)
             exit(1);
         }
     }
-    //dev_handle=libusb_open_device_with_vid_pid(ctx,IDint[czujnik][0],IDint[czujnik][1] );
-    dev_handle=libusb_open_device_with_vid_pid(ctx,7119,5 );
+    dev_handle=libusb_open_device_with_vid_pid(ctx,IDint[czujnik][0],IDint[czujnik][1] );
+    //dev_handle=libusb_open_device_with_vid_pid(ctx,7247,0052);
     if(libusb_kernel_driver_active(dev_handle, 0) == 1)
         {
                     qDebug()<<"Kernel Driver Active"<<endl;
@@ -109,56 +104,33 @@ void komunikacjaUSB::transfer(int czujnik,komunikacjaUSB u)
         Err.showMessage("Nie można się połączyć z urządzeniem: "+QString::number(czujnik));
         qDebug() << "Nie można się połączyć z urządzeniem: ";
         exit(1);
-    }
-    //qDebug()<<"1";
-    //libusb_free_device_list(devs,1);
-    //qDebug()<<"1.1";
-    unsigned char *data=new unsigned char[10];
-    //qDebug()<<"1.3";
-    int sprawdz;
-    //qDebug()<<"1.4";
+    }    
+    unsigned char data[10];
+    int sprawdz;   
     r=libusb_claim_interface(dev_handle,0);
-    //qDebug()<<"2";
     if(r<0)
     {
         Err.showMessage("Nie można się połączyć z urządzeniem");
         qDebug() << "Nie można się połączyć z urządzeniem"+QString::number(r);
         exit(0);
-    }
-
-    for(int j=0;j<100;j++)
-    {
-    r=libusb_interrupt_transfer(dev_handle,0x81 ,data,10,&sprawdz,10);
-    qDebug()<<data;
-    int liczba = (int)data[9];
+    }    
     QString str;
-    str.append(data[9]);
-    u.Dane1<<str;
-    qDebug()<<liczba;
+    int rr=libusb_interrupt_transfer(dev_handle,0x81 ,data,10,&sprawdz,10);
+    for(int j=0;j<sprawdz;j++)
+    {
+    str.append(data[j]);
     }
-
-
+    buforx=data[3];
+    bufory=data[4];
     if(libusb_attach_kernel_driver(dev_handle,0)==1)
     {
         qDebug()<<"driver on";
-
     }
     else
     {
         qDebug()<<"driver off";
     }
-    if(r==0&&sprawdz==10)
-    {
-        Err.showMessage("Jest git");
-        qDebug() << "Jest git";
-    }
-    else
-    {
-        Err.showMessage("Wystąpił błąd podczas transmisji");
-        qDebug() << "Wystąpił błąd podczas transmisji";
-    }
     r = libusb_release_interface(dev_handle, 0);
-    delete[] data;
     qDebug()<<"KONIEC";
 }
 OknoGlowne::OknoGlowne(QWidget *parent) :
@@ -166,7 +138,6 @@ OknoGlowne::OknoGlowne(QWidget *parent) :
     ui(new Ui::OknoGlowne)
 {
     ui->setupUi(this);
-    //connect(ui->pbStart,SIGNAL(clicked(bool)),)
 
 }
 
@@ -190,8 +161,18 @@ void OknoGlowne::on_pbUstawieniaUSB_clicked()
 void OknoGlowne::on_pbStart_clicked()
 {
 
-
+    for(int j=0;j<500;j++)
+    {
     u.transfer(u.getCzujnik1index(),u);
+   // if(u.Dane1x.isEmpty()) ui->tbError->append("Pusty");
+        //else
+    u.Dane1x=buforx;
+    u.Dane1y=bufory;
+    ui->tbError->append(QString::number(u.Dane1x));
+    qDebug()<<"start:"<<u.Dane1x;
+
+    }
+
     //qDebug()<<u.Dane1.last();
 
 }

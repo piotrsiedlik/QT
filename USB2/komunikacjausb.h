@@ -12,7 +12,8 @@ public:
     QString wyswietlurzadzenia();
     QString ID[20][4];
     uint16_t IDint[20][4];
-    QList <QString> Dane1;
+    int Dane1x;
+    int Dane1y;
     int getLurz()
     {
         int l=lurz;
